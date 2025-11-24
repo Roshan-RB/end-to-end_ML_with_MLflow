@@ -62,17 +62,9 @@ open up you local host and port
 ### dagshub
 [dagshub](https://dagshub.com/)
 
+```bash
 import dagshub
 dagshub.init(repo_owner='Roshan-RB', repo_name='end-to-end_ML_with_MLflow', mlflow=True)
-
-import mlflow
-with mlflow.start_run():
-  mlflow.log_param('parameter name', 'value')
-  mlflow.log_metric('metric name', 1)
-
-```bash
-
-
 
 ```
 
