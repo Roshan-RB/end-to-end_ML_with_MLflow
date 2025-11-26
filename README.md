@@ -103,7 +103,7 @@ dagshub.init(repo_owner='Roshan-RB', repo_name='end-to-end_ML_with_MLflow', mlfl
 
 	
 ## 3. Create ECR repo to store/save docker image
-    - Save the URI: 566373416292.dkr.ecr.ap-south-1.amazonaws.com/mlproj
+    - Save the URI: 009093123566.dkr.ecr.eu-north-1.amazonaws.com/mlproject-roshan
 
 	
 ## 4. Create EC2 machine (Ubuntu) 
