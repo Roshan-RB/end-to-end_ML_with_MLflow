@@ -1,156 +1,215 @@
-# End-to-end-Machine-Learning-Project-with-MLflow
+# End-to-end Machine Learning Project with MLflow, Streamlit, Docker, and AWS CI/CD
 
+This repository provides a complete end-to-end machine learning workflow, including data pipelines, ML experiments, model tracking, a Streamlit-based prediction UI, Docker containerization, and automated CI/CD deployment to AWS using GitHub Actions.
 
-## Workflows
+---
 
-1. Update config.yaml
-2. Update schema.yaml
-3. Update params.yaml
-4. Update the entity
-5. Update the configuration manager in src config
-6. Update the components
-7. Update the pipeline 
-8. Update the main.py
-9. Update the app.py
+# Project Workflow
 
+1. Update `config.yaml`
+2. Update `schema.yaml`
+3. Update `params.yaml`
+4. Update entity definitions
+5. Update configuration manager (`src/config`)
+6. Update ML pipeline components
+7. Update pipeline orchestrator
+8. Update `main.py`
+9. Update `streamlit_app.py` (Streamlit UI)
 
-# How to run?
-### STEPS:
+---
 
-Clone the repository
+# How to Run Locally
 
-```bash
-https://github.com/Roshan-RB/end-to-end_ML_with_MLflow
+## 1. Clone the repository
+
 ```
-### STEP 01- Create a conda environment after opening the repository
-
-```bash
-conda create -n mlproj python=3.8 -y
+git clone https://github.com/Roshan-RB/end-to-end_ML_with_MLflow
+cd end-to-end_ML_with_MLflow
 ```
 
-```bash
+## 2. Create and activate a virtual environment
+
+```
+conda create -n mlproj python=3.11 -y
 conda activate mlproj
 ```
 
+## 3. Install project requirements
 
-### STEP 02- install the requirements
-```bash
+```
 pip install -r requirements.txt
 ```
 
+## 4. Run the ML training pipeline
 
-```bash
-# Finally run the following command
-python app.py
+```
+python main.py
 ```
 
-Now,
-```bash
-open up you local host and port
+## 5. Run the Streamlit application
+
+```
+streamlit run streamlit_app.py
 ```
 
+Open the application in your browser at:
 
+```
+http://localhost:8501
+```
 
-## MLflow
+---
 
-[Documentation](https://mlflow.org/docs/latest/index.html)
+# MLflow Tracking
 
+Start MLflow UI locally:
 
-##### cmd
-- mlflow ui
+```
+mlflow ui
+```
 
-### dagshub
-[dagshub](https://dagshub.com/)
+Access the UI at:
 
-```bash
+```
+http://127.0.0.1:5000
+```
+
+Optional integration with DagsHub:
+
+```
 import dagshub
-dagshub.init(repo_owner='Roshan-RB', repo_name='end-to-end_ML_with_MLflow', mlflow=True)
-
+dagshub.init(
+    repo_owner='Roshan-RB',
+    repo_name='end-to-end_ML_with_MLflow',
+    mlflow=True
+)
 ```
 
+---
 
+# Docker Support
 
-# AWS-CICD-Deployment-with-Github-Actions
+## Build the Docker image
 
-## 1. Login to AWS console.
+```
+docker build -t wine-ml-app .
+```
 
-## 2. Create IAM user for deployment
+## Run the Docker container
 
-	#with specific access
+```
+docker run -p 8501:8501 wine-ml-app
+```
 
-	1. EC2 access : It is virtual machine
+Access the application at:
 
-	2. ECR: Elastic Container registry to save your docker image in aws
+```
+http://localhost:8501
+```
 
+---
 
-	#Description: About the deployment
+# AWS CI/CD Deployment (ECR, EC2, GitHub Actions)
 
-	1. Build docker image of the source code
+This project includes a complete AWS deployment pipeline using GitHub Actions.
 
-	2. Push your docker image to ECR
+## Required AWS Services
 
-	3. Launch Your EC2 
+* ECR (Elastic Container Registry)
+* EC2 (Ubuntu instance)
+* IAM (user with programmatic access)
 
-	4. Pull Your image from ECR in EC2
+---
 
-	5. Lauch your docker image in EC2
+# IAM Permissions
 
-	#Policy:
+Attach the following AWS managed policies to your deployment IAM user:
 
-	1. AmazonEC2ContainerRegistryFullAccess
+* AmazonEC2ContainerRegistryFullAccess
+* AmazonEC2FullAccess
 
-	2. AmazonEC2FullAccess
+---
 
-	
-## 3. Create ECR repo to store/save docker image
-    - Save the URI: 009093123566.dkr.ecr.eu-north-1.amazonaws.com/mlproject-roshan
+# Create an ECR Repository
 
-	
-## 4. Create EC2 machine (Ubuntu) 
+Example ECR URI format:
 
-## 5. Open EC2 and Install docker in EC2 Machine:
-	
-	
-	#optinal
+```
+123456789012.dkr.ecr.eu-central-1.amazonaws.com/mlproject
+```
 
-	sudo apt-get update -y
+Region used: `eu-central-1` (Frankfurt)
 
-	sudo apt-get upgrade
-	
-	#required
+---
 
-	curl -fsSL https://get.docker.com -o get-docker.sh
+# EC2 Setup
 
-	sudo sh get-docker.sh
+1. Launch an Ubuntu EC2 instance.
+2. Install Docker:
 
-	sudo usermod -aG docker ubuntu
+```
+sudo apt update -y
+sudo apt upgrade -y
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker ubuntu
+newgrp docker
+```
 
-	newgrp docker
-	
-# 6. Configure EC2 as self-hosted runner:
-    setting>actions>runner>new self hosted runner> choose os> then run command one by one
+---
 
+# Configure EC2 as a GitHub Self-hosted Runner
 
-# 7. Setup github secrets:
+Navigate to GitHub:
 
-    AWS_ACCESS_KEY_ID=
+```
+Repository Settings → Actions → Runners → New self-hosted runner
+```
 
-    AWS_SECRET_ACCESS_KEY=
+Follow the setup steps provided.
 
-    AWS_REGION = us-east-1
+---
 
-    AWS_ECR_LOGIN_URI = demo>>  566373416292.dkr.ecr.ap-south-1.amazonaws.com
+# GitHub Secrets Required
 
-    ECR_REPOSITORY_NAME = simple-app
+Set the following secrets:
 
+* AWS_ACCESS_KEY_ID
+* AWS_SECRET_ACCESS_KEY
+* AWS_REGION = eu-central-1
+* AWS_ECR_LOGIN_URI (example: 123456789012.dkr.ecr.eu-central-1.amazonaws.com)
+* ECR_REPOSITORY_NAME (example: mlproject)
 
+---
 
+# CI/CD Pipeline Summary
 
-## About MLflow 
-MLflow
+The GitHub Actions workflow performs the following steps:
 
- - Its Production Grade
- - Trace all of your expriements
- - Logging & tagging your model
+1. Linting and unit tests
+2. Build Docker image
+3. Push Docker image to ECR
+4. Pull image on EC2
+5. Stop existing container (if any)
+6. Deploy the new container
+7. Clean up unused Docker resources
+
+The final container runs on EC2 and serves the Streamlit application on port 8501.
+
+---
+
+# Technologies Used
+
+* Streamlit
+* MLflow
+* Docker
+* GitHub Actions
+* AWS ECR and EC2
+* DagsHub (optional)
+* Scikit-learn
+* Python 3.11
+* Pandas and NumPy
+
+---
 
 
